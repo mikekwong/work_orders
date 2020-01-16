@@ -10,6 +10,7 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
   const [isError, setIsError] = useState("");
   // const [searchSubmitted, setSearchSubmitted] = useState(false);
   const [sortAscending, setSortAscending] = useState(true);
+  const [nameFound, setNameFound] = useState(false);
 
   const notFound = <p>Not Found.</p>;
 
@@ -49,7 +50,7 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
     };
     fetchData();
     return () => (isSubscribed = false);
-  }, []);
+  }, [results]);
 
   function resultsList() {
     sortAscending
@@ -57,21 +58,20 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
       : results.sort((a, b) => b.deadline - a.deadline);
 
     if (query.length > 3) {
-      return workerData.map(worker => {
-        if (worker.worker.name.toLowerCase().includes(query.toLowerCase())) {
-          return results.map(result => {
-            if (result.workerId === worker.worker.id) {
-              return (
-                <Result
-                  key={result.id}
-                  result={result}
-                  worker={workerData[worker.worker.id]}
-                />
-              );
-            }
-          });
-        }
-      });
+      let foundWorker = workerData.filter(worker =>
+        worker.worker.name.toLowerCase().includes(query.toLowerCase())
+      );
+      return results
+        .filter(result => result.workerId === foundWorker[0].worker.id)
+        .map(match => {
+          return (
+            <Result
+              key={match.id}
+              result={match}
+              worker={workerData[match.workerId]}
+            />
+          );
+        });
     } else {
       return results.map(result => (
         <Result
@@ -101,6 +101,8 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
       </form>
       <h1>Results</h1>
       {isError && <div>Something went wrong...</div>}
+      {!nameFound && <div>No matches found...</div>}
+
       {isLoading ? <div>Loading...</div> : resultsFound && resultsList()}
     </>
   );
