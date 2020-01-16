@@ -31,7 +31,7 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
           })
         );
         isSubscribed &&
-          setWorkerData(results.sort((a, b) => a.worker.id < b.worker.id));
+          setWorkerData(results.sort((a, b) => a.worker.id - b.worker.id));
       } catch (error) {
         console.error(error);
       }
@@ -40,31 +40,23 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
     return () => (isSubscribed = false);
   }, []);
 
-  // const onSubmit = (e, query) => {
-  //   e.preventDefault();
-  //   setSearchSubmitted(true);
-  //   setResults(results.map(result => result.workerId === 2));
-  // };
-
   function resultsList() {
-    if (query.length) {
-      // return workerData.map(worker => {
-      //   if (worker.worker.name.toLowerCase().includes(query.toLowerCase())) {
-      //     console.log(worker.worker.id);
-      //     return results.map(result => {
-      //       if (result.id === worker.worker.id) {
-      //         console.log(result.id);
-      //         return (
-      //           <Result
-      //             key={result.id}
-      //             result={result}
-      //             worker={workerData[worker.worker.id]}
-      //           />
-      //         );
-      //       }
-      //     });
-      //   }
-      // });
+    if (query.length > 3) {
+      return workerData.map(worker => {
+        if (worker.worker.name.toLowerCase().includes(query.toLowerCase())) {
+          return results.map(result => {
+            if (result.workerId === worker.worker.id) {
+              return (
+                <Result
+                  key={result.id}
+                  result={result}
+                  worker={workerData[worker.worker.id]}
+                />
+              );
+            }
+          });
+        }
+      });
     } else {
       return results.map(result => (
         <Result
@@ -75,10 +67,6 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
       ));
     }
   }
-
-  console.log(workerData);
-
-  // console.log(workerData[1]);
 
   return (
     <>
