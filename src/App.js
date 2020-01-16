@@ -7,29 +7,24 @@ import "./App.css";
 const App = () => {
   const [resultsData, setResultsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [isError, setIsError] = useState("");
   const [resultsFound, setResultsFound] = useState(false);
-  const [sortFilter, setSortFilter] = useState("name");
-  // const [searchSubmitted, setSearchSubmitted] = useState(false);
-  const [url, setUrl] = useState(`${BASE_URL}/work_orders`);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(url);
+        const response = await fetch(`${BASE_URL}/work_orders`);
         const json = await response.json();
         setResultsData(json.orders);
         setResultsFound(true);
       } catch (error) {
-        setIsError(true);
+        setIsError(error.toString());
       }
       setIsLoading(false);
     };
     fetchData();
   }, []);
-
-  const onFilterChange = () => {};
 
   return (
     <div>

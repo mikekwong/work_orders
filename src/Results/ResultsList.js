@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Result from "./Result";
 import { BASE_URL } from "../api/hatchways";
+import "./ResultsList.css";
 
 const ResultsList = ({ setResults, results, resultsFound }) => {
   const [query, setQuery] = useState("");
   const [workerData, setWorkerData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [searchSubmitted, setSearchSubmitted] = useState(false);
+  const [isError, setIsError] = useState("");
+  // const [searchSubmitted, setSearchSubmitted] = useState(false);
   const [sortAscending, setSortAscending] = useState(true);
 
   const notFound = <p>Not Found.</p>;
@@ -25,17 +26,19 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
     let isSubscribed = true;
     const fetchData = async () => {
       try {
-        const results = await Promise.all(
+        setIsLoading(true);
+        const fetchResults = await Promise.all(
           urlIds.map(async url => {
             let response = await fetch(url);
             return response.json();
           })
         );
         isSubscribed &&
-          setWorkerData(results.sort((a, b) => a.worker.id - b.worker.id));
+          setWorkerData(fetchResults.sort((a, b) => a.worker.id - b.worker.id));
       } catch (error) {
-        console.error(error);
+        setIsError(error.toString());
       }
+      setIsLoading(false);
     };
     fetchData();
     return () => (isSubscribed = false);
@@ -82,13 +85,16 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
           value={query}
           onChange={e => setQuery(e.target.value)}
         />
-
-        <button type="button" onClick={() => setSortAscending(!sortAscending)}>
-          Sort
-        </button>
+        <input
+          type="checkbox"
+          id="switch"
+          onClick={() => setSortAscending(!sortAscending)}
+        />
+        <label htmlFor="switch">Toggle</label>
       </form>
       <h1>Results</h1>
-      {resultsFound && !searchSubmitted && resultsList()}
+      {isError && <div>Something went wrong...</div>}
+      {isLoading ? <div>Loading...</div> : resultsFound && resultsList()}
     </>
   );
 };
