@@ -21,7 +21,7 @@ const ResultsList = ({ setResults, results, isFetched }) => {
         urlIds.push(`${BASE_URL}/workers/${id}`);
       }
     }
-    // Boolean to resolve memory leak for state updates
+    // Boolean to resolve memory leak for fetch state updates
     let isSubscribed = true;
     const fetchData = async () => {
       try {
@@ -87,29 +87,33 @@ const ResultsList = ({ setResults, results, isFetched }) => {
   }
 
   return (
-    <>
+    <div className="container-results">
       <form>
         <input
+          id="name-input"
           placeholder="Filter by worker name..."
           type="text"
           value={query}
           onChange={e => setQuery(e.target.value)}
         />
-        <input
-          type="checkbox"
-          id="switch"
-          onClick={() => setSortAscending(!sortAscending)}
-        />
-        <label htmlFor="switch">Toggle</label>
+        <div className="toggle">
+          <p>Earliest first</p>
+          <input
+            type="checkbox"
+            id="deadline-input"
+            onClick={() => setSortAscending(!sortAscending)}
+          />
+          <label htmlFor="deadline-input">Toggle</label>
+          <p>Latest first</p>
+        </div>
       </form>
-      <h1>Results</h1>
       {isError && <div>Something went wrong...</div>}
       {isLoading ? (
         <div>Loading...</div>
       ) : (
         isFetched && workersFetched && resultsList()
       )}
-    </>
+    </div>
   );
 };
 

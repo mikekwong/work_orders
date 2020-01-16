@@ -1,4 +1,5 @@
 import React from "react";
+import "./Result.css";
 
 const Result = ({ worker, result: { deadline, description, name } }) => {
   const convertDateTime = deadline => {
@@ -32,21 +33,23 @@ const Result = ({ worker, result: { deadline, description, name } }) => {
   };
 
   return (
-    <>
-      <ul>
-        <li>{name}</li>
-        <li>{convertDateTime(deadline)}</li>
-        <li>{description}</li>
-        {worker && (
-          <div>
-            <img alt="worker" src={worker.worker.image} />
-            <li>{worker.worker.name}</li>
-            <li>{worker.worker.companyName}</li>
-            <li>{worker.worker.email}</li>
-          </div>
-        )}
-      </ul>
-    </>
+    <div className="container-workorder">
+      <div className="workorder-info">
+        <h3>{name}</h3>
+        <p>{description}</p>
+      </div>
+      <div className="workorder-worker">
+        <img alt="worker" src={worker.worker.image} />
+        <div className="workorder-workerInfo">
+          <p>{worker.worker.name}</p>
+          <p>{worker.worker.companyName}</p>
+          <p>{worker.worker.email}</p>
+        </div>
+      </div>
+      <div className="workorder-datetime">
+        <p>{convertDateTime(deadline)}</p>
+      </div>
+    </div>
   );
 };
 
