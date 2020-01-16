@@ -10,9 +10,6 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
   const [isError, setIsError] = useState("");
   // const [searchSubmitted, setSearchSubmitted] = useState(false);
   const [sortAscending, setSortAscending] = useState(true);
-  const [nameFound, setNameFound] = useState(false);
-
-  const notFound = <p>Not Found.</p>;
 
   useEffect(() => {
     const lookup = {};
@@ -58,20 +55,22 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
       : results.sort((a, b) => b.deadline - a.deadline);
 
     if (query.length > 3) {
-      let foundWorker = workerData.filter(worker =>
+      const foundWorker = workerData.filter(worker =>
         worker.worker.name.toLowerCase().includes(query.toLowerCase())
       );
-      return results
-        .filter(result => result.workerId === foundWorker[0].worker.id)
-        .map(match => {
-          return (
+      if (foundWorker.length) {
+        return results
+          .filter(result => result.workerId === foundWorker[0].worker.id)
+          .map(match => (
             <Result
               key={match.id}
               result={match}
               worker={workerData[match.workerId]}
             />
-          );
-        });
+          ));
+      } else {
+        return <p>No matches found...</p>;
+      }
     } else {
       return results.map(result => (
         <Result
@@ -101,8 +100,6 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
       </form>
       <h1>Results</h1>
       {isError && <div>Something went wrong...</div>}
-      {!nameFound && <div>No matches found...</div>}
-
       {isLoading ? <div>Loading...</div> : resultsFound && resultsList()}
     </>
   );
