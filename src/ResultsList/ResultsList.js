@@ -3,7 +3,7 @@ import Result from "../Result/Result";
 import { BASE_URL } from "../api/hatchways";
 import "./ResultsList.css";
 
-const ResultsList = ({ setResults, results, isFetched }) => {
+const ResultsList = ({ results, isFetched }) => {
   const [query, setQuery] = useState("");
   const [workerData, setWorkerData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -14,6 +14,7 @@ const ResultsList = ({ setResults, results, isFetched }) => {
   useEffect(() => {
     const lookup = {};
     const urlIds = [];
+    // push individual worker fetch URLs to array for promise below
     for (let i = 0; i < results.length; i++) {
       let id = results[i].workerId;
       if (!lookup[id]) {

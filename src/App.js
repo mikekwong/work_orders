@@ -32,11 +32,7 @@ const App = () => {
       {isLoading ? (
         <div>Loading...</div>
       ) : (
-        <ResultsList
-          setResults={setResultsData}
-          results={resultsData}
-          isFetched={isFetched}
-        />
+        <ResultsList results={resultsData} isFetched={isFetched} />
       )}
     </div>
   );
