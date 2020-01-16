@@ -1,11 +1,7 @@
 .container-workorder {
-  width: 40%;
-  /* display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-	text-align: center; */
-  margin: 30px 60px;
+  width: 450px;
+  height: 350px;
+  margin: 20px 60px;
   background-color: rgb(240, 240, 240);
 }
 
@@ -43,7 +39,7 @@
 }
 
 .container-workorder .workorder-datetime {
-  margin-top: 40px;
+  margin-top: 20px;
   margin-right: 20px;
   font-size: 12px;
   text-align: right;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from "./api/hatchways";
-import ResultsList from "./Results/ResultsList";
+import ResultsList from "./ResultsList/ResultsList";
 import "./App.css";
 
 const App = () => {

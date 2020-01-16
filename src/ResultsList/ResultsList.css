@@ -1,19 +1,12 @@
 .container-results {
-  width: 100%;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  text-align: center;
 }
 
 .container-results form {
   width: 100%;
-  margin: 0 auto;
-}
-
-.container-results form > label {
-  margin: 0 auto;
 }
 
 .container-results form #name-input {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Result from "./Result";
+import Result from "../Result/Result";
 import { BASE_URL } from "../api/hatchways";
 import "./ResultsList.css";
 
@@ -53,7 +53,7 @@ const ResultsList = ({ setResults, results, isFetched }) => {
     return () => (isSubscribed = false);
   }, [results]);
 
-  function resultsList() {
+  const renderResults = () => {
     sortAscending
       ? results.sort((a, b) => a.deadline - b.deadline)
       : results.sort((a, b) => b.deadline - a.deadline);
@@ -84,7 +84,7 @@ const ResultsList = ({ setResults, results, isFetched }) => {
         />
       ));
     }
-  }
+  };
 
   return (
     <div className="container-results">
@@ -111,7 +111,7 @@ const ResultsList = ({ setResults, results, isFetched }) => {
       {isLoading ? (
         <div>Loading...</div>
       ) : (
-        isFetched && workersFetched && resultsList()
+        isFetched && workersFetched && renderResults()
       )}
     </div>
   );
