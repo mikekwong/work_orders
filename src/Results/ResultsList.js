@@ -8,6 +8,7 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [searchSubmitted, setSearchSubmitted] = useState(false);
+  const [sortAscending, setSortAscending] = useState(true);
 
   const notFound = <p>Not Found.</p>;
 
@@ -41,6 +42,10 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
   }, []);
 
   function resultsList() {
+    sortAscending
+      ? results.sort((a, b) => a.deadline - b.deadline)
+      : results.sort((a, b) => b.deadline - a.deadline);
+
     if (query.length > 3) {
       return workerData.map(worker => {
         if (worker.worker.name.toLowerCase().includes(query.toLowerCase())) {
@@ -77,7 +82,10 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
           value={query}
           onChange={e => setQuery(e.target.value)}
         />
-        <button type="submit">Submit</button>
+
+        <button type="button" onClick={() => setSortAscending(!sortAscending)}>
+          Sort
+        </button>
       </form>
       <h1>Results</h1>
       {resultsFound && !searchSubmitted && resultsList()}
