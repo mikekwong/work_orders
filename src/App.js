@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from "./api/hatchways";
 import ResultsList from "./Results/ResultsList";
-// import Search from "./Search/Search";
 import "./App.css";
 
 const App = () => {
   const [resultsData, setResultsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState("");
-  const [resultsFound, setResultsFound] = useState(false);
+  const [isFetched, setIsFetched] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,7 +16,7 @@ const App = () => {
         const response = await fetch(`${BASE_URL}/work_orders`);
         const json = await response.json();
         setResultsData(json.orders);
-        setResultsFound(true);
+        setIsFetched(true);
       } catch (error) {
         setIsError(error.toString());
       }
@@ -37,7 +36,7 @@ const App = () => {
         <ResultsList
           setResults={setResultsData}
           results={resultsData}
-          resultsFound={resultsFound}
+          isFetched={isFetched}
         />
       )}
     </div>

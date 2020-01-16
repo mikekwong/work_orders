@@ -3,13 +3,13 @@ import Result from "./Result";
 import { BASE_URL } from "../api/hatchways";
 import "./ResultsList.css";
 
-const ResultsList = ({ setResults, results, resultsFound }) => {
+const ResultsList = ({ setResults, results, isFetched }) => {
   const [query, setQuery] = useState("");
   const [workerData, setWorkerData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState("");
-  // const [searchSubmitted, setSearchSubmitted] = useState(false);
   const [sortAscending, setSortAscending] = useState(true);
+  const [workersFetched, setWorkersFetched] = useState(false);
 
   useEffect(() => {
     const lookup = {};
@@ -21,6 +21,7 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
         urlIds.push(`${BASE_URL}/workers/${id}`);
       }
     }
+    // Boolean to resolve memory leak for state updates
     let isSubscribed = true;
     const fetchData = async () => {
       try {
@@ -32,12 +33,14 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
           })
         );
         if (isSubscribed) {
+          setWorkersFetched(true);
           setWorkerData(fetchResults.sort((a, b) => a.worker.id - b.worker.id));
         } else {
           return null;
         }
       } catch (error) {
         if (isSubscribed) {
+          setWorkersFetched(false);
           setIsError(error.toString());
         } else {
           return null;
@@ -46,6 +49,7 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
       setIsLoading(false);
     };
     fetchData();
+    // Cancel subscriptions once component unmounts
     return () => (isSubscribed = false);
   }, [results]);
 
@@ -100,7 +104,11 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
       </form>
       <h1>Results</h1>
       {isError && <div>Something went wrong...</div>}
-      {isLoading ? <div>Loading...</div> : resultsFound && resultsList()}
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        isFetched && workersFetched && resultsList()
+      )}
     </>
   );
 };

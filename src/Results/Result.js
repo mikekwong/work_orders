@@ -1,9 +1,6 @@
 import React from "react";
 
-const Result = ({
-  worker,
-  result: { deadline, description, name, workerId }
-}) => {
+const Result = ({ worker, result: { deadline, description, name } }) => {
   const convertDateTime = deadline => {
     let a = new Date(deadline * 1000);
     let year = a.getFullYear();
@@ -30,16 +27,16 @@ const Result = ({
       a.getSeconds().toString().length === 1
         ? `0${a.getSeconds()}`
         : a.getSeconds();
-    let time = `${month}/${date}/${year} ${hourValue}:${min}:${sec} ${dd}`;
-    return time;
+
+    return `${month}/${date}/${year} ${hourValue}:${min}:${sec} ${dd}`;
   };
+
   return (
     <>
       <ul>
         <li>{name}</li>
         <li>{convertDateTime(deadline)}</li>
         <li>{description}</li>
-        <li>{workerId}</li>
         {worker && (
           <div>
             <img alt="worker" src={worker.worker.image} />
