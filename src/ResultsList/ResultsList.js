@@ -1,68 +1,69 @@
-import React, { useState, useEffect } from "react";
-import Result from "../Result/Result";
-import { BASE_URL } from "../api/hatchways";
-import "./ResultsList.css";
+import React, { useState, useEffect } from 'react'
+import Result from '../Result/Result'
+import PropTypes from 'prop-types'
+import { BASE_URL } from '../api/hatchways'
+import './ResultsList.css'
 
 const ResultsList = ({ results, isFetched }) => {
-  const [query, setQuery] = useState("");
-  const [workerData, setWorkerData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState("");
-  const [sortAscending, setSortAscending] = useState(true);
-  const [workersFetched, setWorkersFetched] = useState(false);
+  const [query, setQuery] = useState('')
+  const [workerData, setWorkerData] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [isError, setIsError] = useState('')
+  const [sortAscending, setSortAscending] = useState(true)
+  const [workersFetched, setWorkersFetched] = useState(false)
 
   useEffect(() => {
-    const lookup = {};
-    const urlIds = [];
+    const lookup = {}
+    const urlIds = []
     // push individual worker fetch URLs to array for promise below
     for (let i = 0; i < results.length; i++) {
-      let id = results[i].workerId;
+      let id = results[i].workerId
       if (!lookup[id]) {
-        lookup[id] = 1;
-        urlIds.push(`${BASE_URL}/workers/${id}`);
+        lookup[id] = 1
+        urlIds.push(`${BASE_URL}/workers/${id}`)
       }
     }
     // Boolean to resolve memory leak for fetch state updates
-    let isSubscribed = true;
+    let isSubscribed = true
     const fetchData = async () => {
       try {
-        setIsLoading(true);
+        setIsLoading(true)
         const fetchResults = await Promise.all(
           urlIds.map(async url => {
-            let response = await fetch(url);
-            return response.json();
+            let response = await fetch(url)
+            return response.json()
           })
-        );
+        )
         if (isSubscribed) {
-          setWorkersFetched(true);
-          setWorkerData(fetchResults.sort((a, b) => a.worker.id - b.worker.id));
+          setWorkersFetched(true)
+          setWorkerData(fetchResults.sort((a, b) => a.worker.id - b.worker.id))
         } else {
-          return null;
+          return null
         }
       } catch (error) {
         if (isSubscribed) {
-          setWorkersFetched(false);
-          setIsError(error.toString());
+          setWorkersFetched(false)
+          setIsError(error.toString())
         } else {
-          return null;
+          return null
         }
       }
-      setIsLoading(false);
-    };
-    fetchData();
+      setIsLoading(false)
+    }
+    fetchData()
     // Cancel subscriptions once component unmounts
-    return () => (isSubscribed = false);
-  }, [results]);
+    return () => (isSubscribed = false)
+  }, [results])
 
   const renderResults = () => {
     sortAscending
       ? results.sort((a, b) => a.deadline - b.deadline)
-      : results.sort((a, b) => b.deadline - a.deadline);
+      : results.sort((a, b) => b.deadline - a.deadline)
 
     if (query.length > 3) {
       const foundWorker = workerData.filter(worker =>
         worker.worker.name.toLowerCase().includes(query.toLowerCase())
-      );
+      )
       if (foundWorker.length) {
         return results
           .filter(result => result.workerId === foundWorker[0].worker.id)
@@ -72,9 +73,9 @@ const ResultsList = ({ results, isFetched }) => {
               result={match}
               worker={workerData[match.workerId]}
             />
-          ));
+          ))
       } else {
-        return <p>No matches found...</p>;
+        return <p>No matches found...</p>
       }
     } else {
       return results.map(result => (
@@ -83,28 +84,28 @@ const ResultsList = ({ results, isFetched }) => {
           result={result}
           worker={workerData[result.workerId]}
         />
-      ));
+      ))
     }
-  };
+  }
 
   return (
-    <div className="container-results">
+    <div className='container-results'>
       <form>
         <input
-          id="name-input"
-          placeholder="Filter by worker name..."
-          type="text"
+          id='name-input'
+          placeholder='Filter by worker name...'
+          type='text'
           value={query}
           onChange={e => setQuery(e.target.value)}
         />
-        <div className="toggle">
+        <div className='toggle'>
           <p>Earliest first</p>
           <input
-            type="checkbox"
-            id="deadline-input"
+            type='checkbox'
+            id='deadline-input'
             onClick={() => setSortAscending(!sortAscending)}
           />
-          <label htmlFor="deadline-input">Toggle</label>
+          <label htmlFor='deadline-input'>Toggle</label>
           <p>Latest first</p>
         </div>
       </form>
@@ -115,7 +116,12 @@ const ResultsList = ({ results, isFetched }) => {
         isFetched && workersFetched && renderResults()
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ResultsList;
+ResultsList.propTypes = {
+  isFetched: PropTypes.bool.isRequired,
+  results: PropTypes.array.isRequired
+}
+
+export default ResultsList
