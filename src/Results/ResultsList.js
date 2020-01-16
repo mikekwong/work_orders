@@ -33,10 +33,17 @@ const ResultsList = ({ setResults, results, resultsFound }) => {
             return response.json();
           })
         );
-        isSubscribed &&
+        if (isSubscribed) {
           setWorkerData(fetchResults.sort((a, b) => a.worker.id - b.worker.id));
+        } else {
+          return null;
+        }
       } catch (error) {
-        setIsError(error.toString());
+        if (isSubscribed) {
+          setIsError(error.toString());
+        } else {
+          return null;
+        }
       }
       setIsLoading(false);
     };
